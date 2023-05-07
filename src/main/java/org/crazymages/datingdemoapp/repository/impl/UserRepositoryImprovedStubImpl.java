@@ -21,11 +21,12 @@ public class UserRepositoryImprovedStubImpl implements UsersRepository {
     @PostConstruct
     public void init() {
         userList = new ArrayList<>();
-        String filePath = "src/main/UsersDB.txt";
+        String filePath = "src/main/resources/UsersDB.txt";
+        String delimiter = ", ";
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                String[] splittedString = line.split(", ");
+                String[] splittedString = line.split(delimiter);
                 User user = new User();
                 user.setName(splittedString[0]);
                 user.setGender(Gender.valueOf(splittedString[1]));
