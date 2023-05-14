@@ -1,9 +1,9 @@
-package org.crazymages.datingdemoapp.repository.impl;
+package org.crazymages.datingdemoapp.service.database.impl;
 
 import jakarta.annotation.PostConstruct;
 import org.crazymages.datingdemoapp.entity.Gender;
 import org.crazymages.datingdemoapp.entity.User;
-import org.crazymages.datingdemoapp.repository.UsersRepository;
+import org.crazymages.datingdemoapp.service.database.UsersDatabaseService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Primary
-public class UserRepositoryImprovedStubImpl implements UsersRepository {
+//@Primary
+public class UserDatabaseServiceImprovedStubImpl implements UsersDatabaseService {
 
     private List<User> userList;
 

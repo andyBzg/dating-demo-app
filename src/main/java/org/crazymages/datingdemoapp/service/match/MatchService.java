@@ -1,4 +1,4 @@
-package org.crazymages.datingdemoapp.service;
+package org.crazymages.datingdemoapp.service.match;
 
 import org.crazymages.datingdemoapp.entity.User;
 
