@@ -8,4 +8,8 @@ public interface UsersDatabaseService {
 
     List<User> getUsersList();
 
+    void add(User user);
+
+    void deleteByName(String name);
+
 }
