@@ -1,9 +1,6 @@
 package org.crazymages.datingdemoapp.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Data
@@ -12,9 +9,11 @@ import lombok.*;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
+    @Basic(optional = false)
     @Column(name = "name")
     private String name;
 
@@ -22,6 +21,6 @@ public class User {
     private Gender gender;
 
     @Column(name = "rating")
-    private int rating;
+    private Integer rating;
 
 }
