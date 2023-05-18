@@ -12,4 +12,9 @@ public interface UsersDatabaseService {
 
     void deleteByName(String name);
 
+    User getUserById(Integer id) throws InterruptedException;
+
+    User updateUser(Integer id, User user);
+
+    void transferPoints(Integer fromId, Integer toId);
 }

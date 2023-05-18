@@ -41,4 +41,31 @@ public class UsersDatabaseServiceFakeImpl implements UsersDatabaseService {
     public List<User> getUsersList() {
         return userList;
     }
+
+    @Override
+    public void add(User user) {
+
+    }
+
+    @Override
+    public void deleteByName(String name) {
+
+    }
+
+    @Override
+    public User getUserById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public User updateUser(Integer id, User user) {
+        return null;
+    }
+
+    @Override
+    public void transferPoints(Integer fromId, Integer toId) {
+
+    }
+
+
 }
