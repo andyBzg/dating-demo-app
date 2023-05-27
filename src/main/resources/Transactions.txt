@@ -1,0 +1,6 @@
+Так как класс UsersDatabaseServiceRealImpl реализует интерфейс UsersDatabaseService,
+для методов этого класса, отмеченных аннотацией @Transactional используется JDK Proxy.
+
+В классах RandomMatchService и HighestRatingMatchService так же используется JDK Proxy,
+так как они реализуют интерфейс MatchService
+
