@@ -17,4 +17,6 @@ public interface UsersDatabaseService {
     User updateUser(Integer id, User user);
 
     void transferPoints(Integer fromId, Integer toId);
+
+    void addTwoUsers();
 }

@@ -1,6 +1,10 @@
 package org.crazymages.datingdemoapp.service.database.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.crazymages.datingdemoapp.entity.Gender;
 import org.crazymages.datingdemoapp.entity.User;
 import org.crazymages.datingdemoapp.repository.UserRepository;
 import org.crazymages.datingdemoapp.service.database.UsersDatabaseService;
@@ -18,13 +22,14 @@ import java.util.Random;
 @Slf4j
 @Service
 @Primary
+@RequiredArgsConstructor
 public class UsersDatabaseServiceRealImpl implements UsersDatabaseService {
 
     private final UserRepository userRepository;
 
-    public UsersDatabaseServiceRealImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @PersistenceContext
+    private final EntityManager entityManager;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -96,6 +101,23 @@ public class UsersDatabaseServiceRealImpl implements UsersDatabaseService {
         recipient.setRating(recipient.getRating() + 100);
         userRepository.save(recipient);
         log.info("Transfer of points from user={} to user={} is successful", fromId, toId);
+    }
+
+    @Override
+    @Transactional
+    public void addTwoUsers() {
+        User firstUser = new User();
+        firstUser.setName("Mr. First");
+        firstUser.setGender(Gender.MALE);
+        firstUser.setRating(100);
+
+        User secondUser = new User();
+        secondUser.setName("Mr. Second");
+        secondUser.setGender(Gender.MALE);
+        secondUser.setRating(200);
+
+        entityManager.persist(firstUser);
+        entityManager.persist(secondUser);
     }
 
 }
