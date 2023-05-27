@@ -1,5 +1,6 @@
 package org.crazymages.datingdemoapp.service.database.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.crazymages.datingdemoapp.entity.User;
 import org.crazymages.datingdemoapp.repository.UserRepository;
 import org.crazymages.datingdemoapp.service.database.UsersDatabaseService;
@@ -14,26 +15,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@Slf4j
 @Service
 @Primary
-public class UserDatabaseServiceRealImpl implements UsersDatabaseService {
+public class UsersDatabaseServiceRealImpl implements UsersDatabaseService {
 
     private final UserRepository userRepository;
 
-    public UserDatabaseServiceRealImpl(UserRepository userRepository) {
+    public UsersDatabaseServiceRealImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "usersList")
     public List<User> getUsersList() {
+        log.info("Getting list of users");
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional()
     @CacheEvict(value = "usersList", allEntries = true)
     public void add(User user) {
         userRepository.save(user);
+        log.info("Saved to DB: {}", user);
     }
 
     @Override
@@ -41,29 +47,35 @@ public class UserDatabaseServiceRealImpl implements UsersDatabaseService {
     @CacheEvict(value = {"usersList", "usersCache"}, allEntries = true)
     public void deleteByName(String name) {
         userRepository.deleteUserByName(name);
+        log.info("Deleted from DB: {}", name);
     }
 
     @Override
     @Cacheable(value = "usersCache", key = "#id")
     public User getUserById(Integer id) throws InterruptedException {
+        log.info("Getting user by id: {}", id);
         Thread.sleep(3000);
         Optional<User> optionalUser = userRepository.findById(id);
+        log.info("Found user: {}", optionalUser);
         return optionalUser.orElse(null);
     }
 
     @Override
+    @Transactional
     @CachePut(value = "usersCache", key = "#id")
     @CacheEvict(value = "usersList", allEntries = true)
     public User updateUser(Integer id, User user) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User modified = userOptional.get();
+        log.info("Getting user by id: {}", id);
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User modified = optionalUser.get();
             modified.setName(user.getName());
             modified.setGender(user.getGender());
             modified.setRating(user.getRating());
             userRepository.save(modified);
         }
-        return userOptional.orElse(null);
+        log.info("Updated user: {}", optionalUser);
+        return optionalUser.orElse(null);
     }
 
     @Override
@@ -83,6 +95,7 @@ public class UserDatabaseServiceRealImpl implements UsersDatabaseService {
 
         recipient.setRating(recipient.getRating() + 100);
         userRepository.save(recipient);
+        log.info("Transfer of points from user={} to user={} is successful", fromId, toId);
     }
 
 }
