@@ -1,13 +1,12 @@
 package org.crazymages.datingdemoapp.controller;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crazymages.datingdemoapp.entity.User;
 import org.crazymages.datingdemoapp.service.database.UsersDatabaseService;
 import org.crazymages.datingdemoapp.service.match.MatchService;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +21,12 @@ public class DatingAppController {
     private final MatchService matchService;
     private final UsersDatabaseService usersDatabaseService;
 
-    @PersistenceContext
-    private final EntityManager entityManager;
-
 
     @PostMapping(value = "/user/add")
-    public void insertUser(@RequestBody User user) {
+    public ResponseEntity<User> insertUser(@RequestBody User user) {
         log.info("Received request to add {}", user);
         usersDatabaseService.add(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @GetMapping(value = "/new-match")
@@ -37,41 +34,54 @@ public class DatingAppController {
         log.info("Received request to get new match");
         User user = matchService.getNewMatch();
         log.info("Sending response with: {}", user);
-        return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/user/get-all")
-    public List<User> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         log.info("Received request to get users list");
         List<User> userList = usersDatabaseService.getUsersList();
-        log.info("Sending response with list of users");
-        return userList;
+        if (userList != null && !userList.isEmpty()) {
+            log.info("Sending response with list of users");
+            return ResponseEntity.ok(userList);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping(value = "/user/{id}")
-    public User getUser(@PathVariable(name = "id") Integer id) throws InterruptedException {
+    public ResponseEntity<User> getUser(@PathVariable(name = "id") Integer id) throws InterruptedException {
         log.info("Received request to get user by id: {}", id);
         User user = usersDatabaseService.getUserById(id);
         log.info("Sending response with: {}", user);
-        return user;
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
     }
 
     @PutMapping(value = "/user/update/{id}")
-    public void updateUser(@PathVariable Integer id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
         log.info("Received request to update user by id: id={}, {}", id, user);
-        usersDatabaseService.updateUser(id, user);
+        User updatedUser = usersDatabaseService.updateUser(id, user);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping(value = "/user/delete/by-name/{name}")
-    public void deleteByName(@PathVariable String name) {
+    public ResponseEntity<String> deleteByName(@PathVariable String name) {
         log.info("Received request to delete user by name: {}", name);
         usersDatabaseService.deleteByName(name);
+        return ResponseEntity.ok(name);
     }
 
     @PutMapping(value = "/gift/{from}/{to}")
-    public void gift(@PathVariable(value = "from") Integer fromId, @PathVariable(value = "to") Integer toId) {
+    public ResponseEntity<String> gift(@PathVariable(value = "from") Integer fromId, @PathVariable(value = "to") Integer toId) {
         log.info("Received request to transfer points from user={} to user={}", fromId, toId);
         usersDatabaseService.transferPoints(fromId, toId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping(value = "/add-two-users")
+    public ResponseEntity<String> addTwoUsersWithEntityManager() {
+        usersDatabaseService.addTwoUsers();
+        return ResponseEntity.status(HttpStatus.OK).body("Users created");
     }
 
 }
