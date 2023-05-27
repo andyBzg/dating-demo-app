@@ -107,8 +107,8 @@ public class UsersDatabaseServiceRealImpl implements UsersDatabaseService {
     @Transactional
     public void addTwoUsers() {
         User firstUser = new User();
-        firstUser.setName("Mr. First");
-        firstUser.setGender(Gender.MALE);
+        firstUser.setName("Mrs. First");
+        firstUser.setGender(Gender.FEMALE);
         firstUser.setRating(100);
 
         User secondUser = new User();
