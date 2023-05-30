@@ -89,14 +89,14 @@ public class UsersDatabaseServiceRealImpl implements UsersDatabaseService {
     public void transferPoints(Integer fromId, Integer toId) {
         User donor = userRepository.getUserById(fromId);
         User recipient = userRepository.getUserById(toId);
-        Random random = new Random();
+//        Random random = new Random();
 
         donor.setRating(donor.getRating() - 100);
         userRepository.save(donor);
 
-        if (random.nextInt(0, 10) < 9) {
+        /*if (random.nextInt(0, 10) < 9) {
             throw new RuntimeException();
-        }
+        }*/
 
         recipient.setRating(recipient.getRating() + 100);
         userRepository.save(recipient);
